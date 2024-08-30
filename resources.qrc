@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>Resources/images/dollar_icon.png</file>
+        <file>Resources/images/go-next-view.svgz</file>
+        <file>Resources/images/go-previous-view.svgz</file>
+        <file>Resources/images/zoom-in.svgz</file>
+        <file>Resources/images/zoom-out.svgz</file>
+        <file>Resources/images/zoom-fit-best.svgz</file>
+        <file>Resources/images/zoom-fit-width.svgz</file>
+        <file>Resources/images/document-open.svgz</file>
+    </qresource>
+</RCC>
