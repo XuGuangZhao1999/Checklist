@@ -35,3 +35,7 @@ class MainWindow(QMainWindow):
 
         self.centralWidget.setLayout(hLayout)
         self.setCentralWidget(self.centralWidget)
+
+        # Connect Signal&Slot
+        self.menuBar.export_pdf_signal.connect(self.previewer.export_to_pdf)
+        self.menuBar.export_word_signal.connect(self.previewer.export_to_word)

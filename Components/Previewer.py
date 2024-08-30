@@ -3,9 +3,12 @@ from PySide6.QtCore import Qt, QStandardPaths, QUrl, QPoint, Slot
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtGui import QIcon
+from pdf2docx import Converter
 import resources_rc
 import sys
 import math
+import pymupdf
+
 
 ZOOM_MULTIPLIER = math.sqrt(2.0)
 
@@ -15,6 +18,7 @@ class Previewer(QWidget):
         self.m_fileDialog = None
         self.pdfView = QPdfView(self)
         self.m_pdf = QPdfDocument()
+        self.m_pdf_path = ""
 
         self.pdf_toolbar = QWidget(self)
         self.doc_open_btn = QPushButton(QIcon(":/icons/Resources/images/document-open.svgz"), "", self)
@@ -78,7 +82,8 @@ class Previewer(QWidget):
             to_open = self.m_fileDialog.selectedUrls()[0]
             if to_open.isValid():
                 if to_open.isLocalFile():
-                    self.m_pdf.load(to_open.toLocalFile())
+                    self.m_pdf_path = to_open.toLocalFile()
+                    self.m_pdf.load(self.m_pdf_path)
                     self.pdfView.setDocument(self.m_pdf)
                     self.page_selected(0)
                 else:
@@ -128,3 +133,16 @@ class Previewer(QWidget):
     def on_actionZoom_Fit_Width_triggered(self):
         self.pdfView.setZoomMode(QPdfView.ZoomMode.FitToWidth)
         self.update_zoom_factor()
+
+    @Slot(str)
+    def export_to_pdf(self, out_path):
+        if len(self.m_pdf_path) != 0:
+            document = pymupdf.open(self.m_pdf_path)
+            document.save(out_path)
+            document.close()
+
+    @Slot(str)
+    def export_to_word(self, out_path):
+        if len(self.m_pdf_path) != 0:
+            document = Converter(self.m_pdf_path)
+            document.convert(out_path, start=0, end=None)
