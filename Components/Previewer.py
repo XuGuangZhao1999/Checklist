@@ -4,6 +4,12 @@ from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtGui import QIcon
 from pdf2docx import Converter
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
 import resources_rc
 import sys
 import math
@@ -73,6 +79,30 @@ class Previewer(QWidget):
 
     def preview(self, doc):
         print(doc)
+
+        pdf_file = "./temp.pdf"
+        c = canvas.Canvas(pdf_file, pagesize=letter)
+        width, height = letter
+
+        song = "simsun"
+        pdfmetrics.registerFont(TTFont(song, f"{song}.ttc"))
+        c.setFont(song, 12)
+
+        c.drawString(100, height - 50, "XJY111749徐广钊")
+
+        # 添加其他内容
+        c.drawString(100, height - 100, "这是一个示例PDF文件。")
+        c.drawString(100, height - 120, "你可以根据需要添加更多内容。")
+
+        # 保存PDF文档
+        c.save()
+
+        self.m_pdf_path = pdf_file
+        if self.m_pdf.status() == QPdfDocument.Status.Ready:
+            self.m_pdf.close()
+        self.m_pdf.load(self.m_pdf_path)
+        self.pdfView.setDocument(self.m_pdf)
+        self.page_selected(0)
 
     @Slot()
     def open(self):
