@@ -1,8 +1,13 @@
 from PySide6.QtWidgets import QWidget, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PySide6.QtCore import Qt, QPoint
+import cn2an
 class TableViewer(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.productUnit = ""
+        self.productCount = 0
+        self.productPrice = 0
+        self.totalPrice = 0
         self.infosTableWidget = QTableWidget(0, 6, self)
         self.infosTableWidget.setHorizontalHeaderLabels(["日期", "品名", "单位", "数量", "单价（元）", "金额（元）"])
 
@@ -15,13 +20,32 @@ class TableViewer(QWidget):
 
     def addRow(self, row):
         row_index = self.infosTableWidget.rowCount()
+        if row_index != 0:
+            row_index -= 1
         self.infosTableWidget.insertRow(row_index)
-        self.infosTableWidget.setItem(row_index, 0, QTableWidgetItem(row["date"]))
-        self.infosTableWidget.setItem(row_index, 1, QTableWidgetItem(row["product"]))
-        self.infosTableWidget.setItem(row_index, 2, QTableWidgetItem(row["unit"]))
-        self.infosTableWidget.setItem(row_index, 3, QTableWidgetItem(str(row["count"])))
-        self.infosTableWidget.setItem(row_index, 4, QTableWidgetItem(str(row["price"])))
-        self.infosTableWidget.setItem(row_index, 5, QTableWidgetItem(str(row["count"] * row["price"])))
+
+        items = [
+            QTableWidgetItem(row["date"]),
+            QTableWidgetItem(row["product"]),
+            QTableWidgetItem(row["unit"]),
+            QTableWidgetItem(str(row["count"])),
+            QTableWidgetItem(str(row["price"])),
+            QTableWidgetItem(str(row["count"] * row["price"]))
+        ]
+
+        for col, item in enumerate(items):
+            item.setTextAlignment(Qt.AlignCenter)
+            self.infosTableWidget.setItem(row_index, col, item)
+
+        self.totalPrice += row["count"] * row["price"]
+        if row_index == 0:
+            self.infosTableWidget.insertRow(row_index + 1)
+            self.productUnit = row["unit"]
+            self.productCount = row["count"]
+            self.productPrice = row["price"]
+        
+        self.updateLastRow()
+
 
     def showContextMenu(self, pos: QPoint):
         context_menu = QMenu(self)
@@ -33,4 +57,18 @@ class TableViewer(QWidget):
         selected_items = self.infosTableWidget.selectedItems()
         if selected_items:
             row_index = selected_items[0].row()
+            self.totalPrice -= float(self.infosTableWidget.item(row_index, 5).text())
             self.infosTableWidget.removeRow(row_index)
+            self.updateLastRow()
+
+    def updateLastRow(self):
+        lastRowIndex = self.infosTableWidget.rowCount() - 1
+        if lastRowIndex != 0:
+            self.infosTableWidget.setSpan(lastRowIndex, 0, 1, 2)
+            self.infosTableWidget.setItem(lastRowIndex, 0, QTableWidgetItem("总计: " + cn2an.an2cn(str(self.totalPrice), "rmb")))
+            self.infosTableWidget.setItem(lastRowIndex, 2, QTableWidgetItem(self.productUnit))
+            self.infosTableWidget.setItem(lastRowIndex, 3, QTableWidgetItem(str(self.productCount)))
+            self.infosTableWidget.setItem(lastRowIndex, 4, QTableWidgetItem(str(self.productPrice)))
+            self.infosTableWidget.setItem(lastRowIndex, 5, QTableWidgetItem(str(self.totalPrice)))
+        else:
+            self.infosTableWidget.removeRow(lastRowIndex)
