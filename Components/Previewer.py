@@ -113,9 +113,9 @@ class Previewer(QWidget):
         # 绘制表格
         table.drawOn(c, x_position, y_position)
 
-        c.drawString(width - 250, y_position - 20, "供货方：")
-        c.drawString(width - 250, y_position - 40, "送货方：")
-        c.drawString(width - 250, y_position - 60, "对货日期：" + doc["Description"]["date"])
+        c.drawString(width - 270, y_position - 20, "供货方：")
+        c.drawString(width - 270, y_position - 40, "送货方：")
+        c.drawString(width - 270, y_position - 60, "对货日期：" + doc["Description"]["date"])
 
         # 保存PDF文档
         c.save()
