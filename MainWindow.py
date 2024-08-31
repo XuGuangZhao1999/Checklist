@@ -1,10 +1,9 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QSplitter, QHBoxLayout, QVBoxLayout, QLabel
-from PySide6.QtCore import Qt
-from PySide6.QtPdf import QPdfDocument
-from PySide6.QtPdfWidgets import QPdfView
+from PySide6.QtCore import Qt, Slot
 from Components.MenuBar import MenuBar
 from Components.Previewer import Previewer
 from Components.InfosReciver import InfosReciver
+from Components.TableViewer import TableViewer
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None) -> None:
@@ -20,9 +19,10 @@ class MainWindow(QMainWindow):
             
         # Left Widget
         self.leftWidget = QWidget(self.centralWidget)
-
+        self.infosTableViewer = TableViewer(self.leftWidget)
         self.infosReciver = InfosReciver(self.leftWidget)
         VLayout = QVBoxLayout()
+        VLayout.addWidget(self.infosTableViewer)
         VLayout.addWidget(self.infosReciver)
         self.leftWidget.setLayout(VLayout)
         
@@ -44,3 +44,14 @@ class MainWindow(QMainWindow):
         # Connect Signal&Slot
         self.menuBar.export_pdf_signal.connect(self.previewer.export_to_pdf)
         self.menuBar.export_word_signal.connect(self.previewer.export_to_word)
+        self.infosReciver.addInfoBtn.clicked.connect(self.addInfos)
+
+    @Slot()
+    def addInfos(self):
+        row = dict()
+        row["date"] = self.infosReciver.dateEdit.text()
+        row["product"] = self.infosReciver.infosProductEdit.text()
+        row["unit"] = self.infosReciver.infosUnitEdit.text()
+        row["count"] = self.infosReciver.infosCountEdit.value()
+        row["price"] = self.infosReciver.infosPriceEdit.value()
+        self.infosTableViewer.addRow(row)

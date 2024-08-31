@@ -32,10 +32,13 @@ class InfosReciver(QWidget):
         self.infosDateEdit = QDateTimeEdit(QDate.currentDate(), self.infosWidget)
         self.infosDateEdit.setMinimumDate(QDate.currentDate().addDays(-730))
         self.infosDateEdit.setMaximumDate(QDate.currentDate().addDays(365))
+        self.infosDateEdit.setDisplayFormat("yyyy.MM.dd")
         self.infosProductEdit = QLineEdit("Product_name" ,self.infosWidget)
         self.infosUnitEdit = QLineEdit("Unit", self.infosWidget)
         self.infosCountEdit = QDoubleSpinBox(self.infosWidget)
         self.infosPriceEdit = QDoubleSpinBox(self.infosWidget)
+        self.infosCountEdit.setRange(-1000, +1000)
+        self.infosPriceEdit.setRange(0, 10000)
         self.addInfoBtn = QPushButton(QIcon(":/icons/Resources/images/row_insert_icon.png"), "", self)
 
         self.initUI()
