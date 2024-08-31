@@ -5,10 +5,12 @@ from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtGui import QIcon
 from pdf2docx import Converter
 
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
 
 import resources_rc
 import sys
@@ -78,21 +80,42 @@ class Previewer(QWidget):
         self.pdfView.setZoomFactor(factor)
 
     def preview(self, doc):
-        print(doc)
-
         pdf_file = "./temp.pdf"
-        c = canvas.Canvas(pdf_file, pagesize=letter)
-        width, height = letter
+        c = canvas.Canvas(pdf_file, pagesize=A4)
+        width, height = A4
 
         song = "simsun"
         pdfmetrics.registerFont(TTFont(song, f"{song}.ttc"))
         c.setFont(song, 12)
 
-        c.drawString(100, height - 50, "XJY111749徐广钊")
+        c.drawCentredString(300, height - 50, doc["Description"]["name"])
+        c.drawCentredString(300, height - 70, doc["Description"]["timeFrom"] + "-" + doc["Description"]["timeTo"])
 
-        # 添加其他内容
-        c.drawString(100, height - 100, "这是一个示例PDF文件。")
-        c.drawString(100, height - 120, "你可以根据需要添加更多内容。")
+        table = Table(doc["TableModel"])
+        style = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # 设置表头背景色
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),  # 设置表头文字颜色
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # 设置对齐方式
+            ('FONTNAME', (0, 0), (-1, 0), song),  # 设置表头字体
+            ('FONTNAME', (0, 1), (-1, -1), song), # 设置表格字体
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # 设置表头底部填充
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # 设置表格背景色
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),  # 设置表格网格线
+            ('SPAN', (0, -1), (1, -1)) # 合并最后一行的第一列和第二列
+        ])
+        table.setStyle(style)
+
+        # 计算表格宽度和起始位置
+        table_width, table_height = table.wrap(0, 0)
+        x_position = (width - table_width) / 2
+        y_position = height - table_height - 90  # 根据需要调整 y 位置
+
+        # 绘制表格
+        table.drawOn(c, x_position, y_position)
+
+        c.drawString(width - 250, y_position - 20, "供货方：")
+        c.drawString(width - 250, y_position - 40, "送货方：")
+        c.drawString(width - 250, y_position - 60, "对货日期：" + doc["Description"]["date"])
 
         # 保存PDF文档
         c.save()
