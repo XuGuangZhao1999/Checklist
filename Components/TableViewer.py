@@ -72,3 +72,6 @@ class TableViewer(QWidget):
             self.infosTableWidget.setItem(lastRowIndex, 5, QTableWidgetItem(str(self.totalPrice)))
         else:
             self.infosTableWidget.removeRow(lastRowIndex)
+
+    def getDocTableModel(self):
+        return "DocTableModel"

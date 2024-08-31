@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.centralWidget)
 
         # Connect Signal&Slot
+        self.menuBar.preview_signal.connect(self.sendInfosToPreviewer)
         self.menuBar.export_pdf_signal.connect(self.previewer.export_to_pdf)
         self.menuBar.export_word_signal.connect(self.previewer.export_to_word)
         self.infosReciver.addInfoBtn.clicked.connect(self.addInfos)
@@ -55,3 +56,10 @@ class MainWindow(QMainWindow):
         row["count"] = self.infosReciver.infosCountEdit.value()
         row["price"] = self.infosReciver.infosPriceEdit.value()
         self.infosTableViewer.addRow(row)
+
+    @Slot()
+    def sendInfosToPreviewer(self):
+        doc = dict()
+        doc["Description"] = self.infosReciver.getDocDescription()
+        doc["TableModel"] = self.infosTableViewer.getDocTableModel()
+        self.previewer.preview(doc)

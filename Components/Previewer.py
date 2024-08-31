@@ -71,6 +71,9 @@ class Previewer(QWidget):
 
         self.pdfView.setZoomFactor(factor)
 
+    def preview(self, doc):
+        print("Doc: ", doc)
+
     @Slot()
     def open(self):
         if not self.m_fileDialog:

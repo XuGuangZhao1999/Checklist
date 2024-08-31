@@ -91,3 +91,6 @@ class InfosReciver(QWidget):
         self.setLayout(VLayout)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.adjustSize()
+
+    def getDocDescription(self):
+        return "DocDescription"

@@ -4,10 +4,12 @@ from PySide6.QtCore import Signal, Slot
 class MenuBar(QMenuBar):
     export_pdf_signal = Signal(str)
     export_word_signal = Signal(str)
+    preview_signal = Signal()
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        previewMenu = self.addMenu("Preview")
+        previewAction = self.addAction("Preview")
+        previewAction.triggered.connect(self.preview)
 
         exportMenu = self.addMenu("Export")
         exportMenu.addAction("Word").triggered.connect(self.exportWord)
@@ -24,3 +26,7 @@ class MenuBar(QMenuBar):
         export_path, _ = QFileDialog.getSaveFileName(filter="PDF 文档(*.pdf)")
         if export_path:
             self.export_pdf_signal.emit(export_path)
+
+    @Slot()
+    def preview(self):
+        self.preview_signal.emit()
