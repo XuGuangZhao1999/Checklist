@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QWidget, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PySide6.QtCore import Qt, QPoint
 import cn2an
+
+headerLabels = ["日期", "品名", "单位", "数量", "单价（元）", "金额（元）"]
 class TableViewer(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -9,7 +11,7 @@ class TableViewer(QWidget):
         self.productPrice = 0
         self.totalPrice = 0
         self.infosTableWidget = QTableWidget(0, 6, self)
-        self.infosTableWidget.setHorizontalHeaderLabels(["日期", "品名", "单位", "数量", "单价（元）", "金额（元）"])
+        self.infosTableWidget.setHorizontalHeaderLabels(headerLabels)
 
         layout = QVBoxLayout()
         layout.addWidget(self.infosTableWidget)
@@ -85,4 +87,16 @@ class TableViewer(QWidget):
             self.infosTableWidget.removeRow(lastRowIndex)
 
     def getDocTableModel(self):
-        return "DocTableModel"
+        model = self.infosTableWidget.model()
+        docTableModel = []
+        docTableModel.append(headerLabels)
+
+        for row in range(model.rowCount()):
+            rowData = []
+            for column in range(model.columnCount()):
+                index = model.index(row, column)
+                value = model.data(index)
+                rowData.append(value)
+            docTableModel.append(rowData)
+
+        return docTableModel

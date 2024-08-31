@@ -72,7 +72,7 @@ class Previewer(QWidget):
         self.pdfView.setZoomFactor(factor)
 
     def preview(self, doc):
-        print("Doc: ", doc)
+        print(doc)
 
     @Slot()
     def open(self):

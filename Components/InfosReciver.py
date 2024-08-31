@@ -93,4 +93,10 @@ class InfosReciver(QWidget):
         self.adjustSize()
 
     def getDocDescription(self):
-        return "DocDescription"
+        docDescription = dict()
+        docDescription["name"] = self.nameLineEdit.text()
+        docDescription["timeFrom"] = self.timeFromDateEdit.text()
+        docDescription["timeTo"] = self.timeToDateEdit.text()
+        docDescription["date"] = self.dateEdit.text()
+
+        return docDescription
