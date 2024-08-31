@@ -8,5 +8,6 @@
         <file>Resources/images/zoom-fit-best.svgz</file>
         <file>Resources/images/zoom-fit-width.svgz</file>
         <file>Resources/images/document-open.svgz</file>
+        <file>Resources/images/row_insert_icon.png</file>
     </qresource>
 </RCC>

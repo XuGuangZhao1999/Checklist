@@ -1,9 +1,10 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QSplitter, QHBoxLayout, QLabel
+from PySide6.QtWidgets import QMainWindow, QWidget, QSplitter, QHBoxLayout, QVBoxLayout, QLabel
 from PySide6.QtCore import Qt
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
 from Components.MenuBar import MenuBar
 from Components.Previewer import Previewer
+from Components.InfosReciver import InfosReciver
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None) -> None:
@@ -18,8 +19,12 @@ class MainWindow(QMainWindow):
         self.centralWidget = QWidget(self)
             
         # Left Widget
-        self.leftWidget = QLabel("Left Widget", alignment=Qt.AlignCenter)
-        self.leftWidget.setStyleSheet("background-color: lightblue")
+        self.leftWidget = QWidget(self.centralWidget)
+
+        self.infosReciver = InfosReciver(self.leftWidget)
+        VLayout = QVBoxLayout()
+        VLayout.addWidget(self.infosReciver)
+        self.leftWidget.setLayout(VLayout)
         
         # PDF Viewer
         self.previewer = Previewer(self)
