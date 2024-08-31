@@ -115,7 +115,7 @@ class Previewer(QWidget):
 
         c.drawString(width - 270, y_position - 20, "供货方：")
         c.drawString(width - 270, y_position - 40, "送货方：")
-        c.drawString(width - 270, y_position - 60, "对货日期：" + doc["Description"]["date"])
+        c.drawString(width - 270, y_position - 60, "对账日期：" + doc["Description"]["date"])
 
         # 保存PDF文档
         c.save()
