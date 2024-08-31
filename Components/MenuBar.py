@@ -15,10 +15,12 @@ class MenuBar(QMenuBar):
 
     @Slot()
     def exportWord(self):
-        export_path = QFileDialog.getSaveFileName(filter="Word 文档(*.docx)")[0]
-        self.export_word_signal.emit(export_path)
+        export_path, _ = QFileDialog.getSaveFileName(filter="Word 文档(*.docx)")
+        if export_path:
+            self.export_word_signal.emit(export_path)
 
     @Slot()
     def exportPDF(self):
-        export_path = QFileDialog.getSaveFileName(filter="PDF 文档(*.pdf)")[0]
-        self.export_pdf_signal.emit(export_path)
+        export_path, _ = QFileDialog.getSaveFileName(filter="PDF 文档(*.pdf)")
+        if export_path:
+            self.export_pdf_signal.emit(export_path)

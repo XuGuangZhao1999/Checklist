@@ -83,6 +83,8 @@ class Previewer(QWidget):
             if to_open.isValid():
                 if to_open.isLocalFile():
                     self.m_pdf_path = to_open.toLocalFile()
+                    if self.m_pdf.status() == QPdfDocument.Status.Ready:
+                        self.m_pdf.close()
                     self.m_pdf.load(self.m_pdf_path)
                     self.pdfView.setDocument(self.m_pdf)
                     self.page_selected(0)
