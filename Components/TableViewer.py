@@ -64,12 +64,23 @@ class TableViewer(QWidget):
     def updateLastRow(self):
         lastRowIndex = self.infosTableWidget.rowCount() - 1
         if lastRowIndex != 0:
+            items = [
+                QTableWidgetItem("总计: " + cn2an.an2cn(str(self.totalPrice), "rmb")),
+                QTableWidgetItem(self.productUnit),
+                QTableWidgetItem(str(self.productCount)),
+                QTableWidgetItem(str(self.productPrice)),
+                QTableWidgetItem(str(self.totalPrice))
+            ]
+
+            for item in items:
+                item.setTextAlignment(Qt.AlignCenter)
+
             self.infosTableWidget.setSpan(lastRowIndex, 0, 1, 2)
-            self.infosTableWidget.setItem(lastRowIndex, 0, QTableWidgetItem("总计: " + cn2an.an2cn(str(self.totalPrice), "rmb")))
-            self.infosTableWidget.setItem(lastRowIndex, 2, QTableWidgetItem(self.productUnit))
-            self.infosTableWidget.setItem(lastRowIndex, 3, QTableWidgetItem(str(self.productCount)))
-            self.infosTableWidget.setItem(lastRowIndex, 4, QTableWidgetItem(str(self.productPrice)))
-            self.infosTableWidget.setItem(lastRowIndex, 5, QTableWidgetItem(str(self.totalPrice)))
+            self.infosTableWidget.setItem(lastRowIndex, 0, items[0])
+            self.infosTableWidget.setItem(lastRowIndex, 2, items[1])
+            self.infosTableWidget.setItem(lastRowIndex, 3, items[2])
+            self.infosTableWidget.setItem(lastRowIndex, 4, items[3])
+            self.infosTableWidget.setItem(lastRowIndex, 5, items[4])
         else:
             self.infosTableWidget.removeRow(lastRowIndex)
 
