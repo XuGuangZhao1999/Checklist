@@ -5,6 +5,7 @@ class MenuBar(QMenuBar):
     export_pdf_signal = Signal(str)
     export_word_signal = Signal(str)
     preview_signal = Signal()
+    clear_signal = Signal()
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -14,6 +15,9 @@ class MenuBar(QMenuBar):
         exportMenu = self.addMenu("Export")
         exportMenu.addAction("Word").triggered.connect(self.exportWord)
         exportMenu.addAction("PDF").triggered.connect(self.exportPDF)
+
+        clearAction = self.addAction("Clear")
+        clearAction.triggered.connect(self.clear_signal.emit)
 
     @Slot()
     def exportWord(self):

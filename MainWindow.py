@@ -45,6 +45,7 @@ class MainWindow(QMainWindow):
         self.menuBar.preview_signal.connect(self.sendInfosToPreviewer)
         self.menuBar.export_pdf_signal.connect(self.previewer.export_to_pdf)
         self.menuBar.export_word_signal.connect(self.previewer.export_to_word)
+        self.menuBar.clear_signal.connect(self.infosTableViewer.clear)
         self.infosReciver.addInfoBtn.clicked.connect(self.addInfos)
 
     @Slot()

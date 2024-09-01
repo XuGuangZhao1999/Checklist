@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QMenu, QTableWidget, QTableWidgetItem, QVBoxLayout
-from PySide6.QtCore import Qt, QPoint
+from PySide6.QtCore import Qt, QPoint, Slot
 import cn2an
 
 headerLabels = ["日期", "品名", "单位", "数量", "单价（元）", "金额（元）"]
@@ -100,3 +100,12 @@ class TableViewer(QWidget):
             docTableModel.append(rowData)
 
         return docTableModel
+    
+    @Slot()
+    def clear(self):
+        self.infosTableWidget.clearContents()
+        self.infosTableWidget.setRowCount(0)
+        self.totalPrice = 0
+        self.productUnit = ""
+        self.productCount = 0
+        self.productPrice = 0
