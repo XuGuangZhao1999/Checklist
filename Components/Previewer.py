@@ -91,31 +91,45 @@ class Previewer(QWidget):
         c.drawCentredString(300, height - 50, doc["Description"]["name"])
         c.drawCentredString(300, height - 70, doc["Description"]["timeFrom"] + "-" + doc["Description"]["timeTo"])
 
-        table = Table(doc["TableModel"])
-        style = TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # 设置表头背景色
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),  # 设置表头文字颜色
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # 设置对齐方式
-            ('FONTNAME', (0, 0), (-1, 0), song),  # 设置表头字体
-            ('FONTNAME', (0, 1), (-1, -1), song), # 设置表格字体
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # 设置表头底部填充
-            ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # 设置表格背景色
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),  # 设置表格网格线
-            ('SPAN', (0, -1), (1, -1)) # 合并最后一行的第一列和第二列
-        ])
-        table.setStyle(style)
+        table_data = doc["TableModel"]
+        total_rows = len(table_data)
 
-        # 计算表格宽度和起始位置
-        table_width, table_height = table.wrap(0, 0)
-        x_position = (width - table_width) / 2
-        y_position = height - table_height - 90  # 根据需要调整 y 位置
+        row_per_page = 35
+        style = [
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # 设置表头背景色
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),  # 设置表头文字颜色
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # 设置对齐方式
+                    ('FONTNAME', (0, 0), (-1, 0), song),  # 设置表头字体
+                    ('FONTNAME', (0, 1), (-1, -1), song), # 设置表格字体
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 4),  # 设置表头底部填充
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # 设置表格背景色
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),  # 设置表格网格线
+                ]
+        for start_row in range(0, total_rows, row_per_page):
+            end_row = min(start_row + row_per_page, total_rows)
+            table_part = Table(table_data[start_row:end_row])
 
-        # 绘制表格
-        table.drawOn(c, x_position, y_position)
+            if end_row == total_rows:
+                style.append(('SPAN', (0, -1), (1, -1)))
+                
+            table_part.setStyle(TableStyle(style))
 
-        c.drawString(width - 270, y_position - 20, "供货方：")
-        c.drawString(width - 270, y_position - 40, "送货方：")
-        c.drawString(width - 270, y_position - 60, "对账日期：" + doc["Description"]["date"])
+            # 计算表格宽度和起始位置
+            table_width, table_height = table_part.wrap(0, 0)
+            x_position = (width - table_width) / 2
+            y_position = height - table_height - 90  # 根据需要调整 y 位置
+
+            # 绘制表格
+            table_part.drawOn(c, x_position, y_position)
+
+            # 如果不是最后一部分，换页
+            if end_row < total_rows:
+                c.showPage()
+                c.setFont(song, 12)
+            else:
+                c.drawString(width - 270, y_position - 20, "供货方：")
+                c.drawString(width - 270, y_position - 40, "送货方：")
+                c.drawString(width - 270, y_position - 60, "对账日期：" + doc["Description"]["date"])
 
         # 保存PDF文档
         c.save()
