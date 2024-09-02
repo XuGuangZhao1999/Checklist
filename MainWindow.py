@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def addInfos(self):
         row = dict()
-        row["date"] = self.infosReciver.dateEdit.text()
+        row["date"] = self.infosReciver.infosDateEdit.text()
         row["product"] = self.infosReciver.infosProductEdit.text()
         row["unit"] = self.infosReciver.infosUnitEdit.text()
         row["count"] = self.infosReciver.infosCountEdit.value()

@@ -12,7 +12,7 @@ class InfosReciver(QWidget):
         self.timeWidget = QWidget(self)
         self.timeFromLabel = QLabel("From:", self.timeWidget)
         self.timeFromDateEdit = QDateTimeEdit(QDate.currentDate(), self.timeWidget)
-        self.timeFromDateEdit.setMinimumDate(QDate.currentDate().addDays(-365))
+        self.timeFromDateEdit.setMinimumDate(QDate.currentDate().addDays(-730))
         self.timeFromDateEdit.setMaximumDate(QDate.currentDate().addDays(365))
         self.timeFromDateEdit.setDisplayFormat("yyyy.MM.dd")
         self.timeToLabel = QLabel("To:", self.timeWidget)

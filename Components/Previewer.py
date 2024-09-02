@@ -128,7 +128,7 @@ class Previewer(QWidget):
                 c.setFont(song, 12)
             else:
                 c.drawString(width - 270, y_position - 20, "供货方：")
-                c.drawString(width - 270, y_position - 40, "送货方：")
+                c.drawString(width - 270, y_position - 40, "收货方：")
                 c.drawString(width - 270, y_position - 60, "对账日期：" + doc["Description"]["date"])
 
         # 保存PDF文档
