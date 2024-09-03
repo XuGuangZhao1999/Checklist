@@ -39,6 +39,7 @@ class TableViewer(QWidget):
             item.setTextAlignment(Qt.AlignCenter)
             self.infosTableWidget.setItem(row_index, col, item)
 
+        self.productCount += row["count"]
         self.totalPrice += row["count"] * row["price"]
         if row_index == 0:
             self.infosTableWidget.insertRow(row_index + 1)
@@ -59,6 +60,7 @@ class TableViewer(QWidget):
         selected_items = self.infosTableWidget.selectedItems()
         if selected_items:
             row_index = selected_items[0].row()
+            self.productCount -= float(self.infosTableWidget.item(row_index, 3).text())
             self.totalPrice -= float(self.infosTableWidget.item(row_index, 5).text())
             self.infosTableWidget.removeRow(row_index)
             self.updateLastRow()
