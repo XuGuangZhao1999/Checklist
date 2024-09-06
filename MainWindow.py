@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.centralWidget.setLayout(hLayout)
         self.setCentralWidget(self.centralWidget)
 
-        # Connect Signal&Slot
+        # Connect Signals&Slots
         self.menuBar.preview_signal.connect(self.sendInfosToPreviewer)
         self.menuBar.export_pdf_signal.connect(self.previewer.export_to_pdf)
         self.menuBar.export_word_signal.connect(self.previewer.export_to_word)
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def addInfos(self):
+        # Add infos to the table
         row = dict()
         row["date"] = self.infosReciver.infosDateEdit.text()
         row["product"] = self.infosReciver.infosProductEdit.text()
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def sendInfosToPreviewer(self):
+        # Send the all infos to Previewer for previewing pdf
         doc = dict()
         doc["Description"] = self.infosReciver.getDocDescription()
         doc["TableModel"] = self.infosTableViewer.getDocTableModel()

@@ -28,6 +28,7 @@ class Previewer(QWidget):
         self.m_pdf = QPdfDocument()
         self.m_pdf_path = ""
 
+        # Previewer toolbar
         self.pdf_toolbar = QWidget(self)
         self.doc_open_btn = QPushButton(QIcon(":/icons/Resources/images/document-open.svgz"), "", self)
         self.zoom_in_btn = QPushButton(QIcon(":/icons/Resources/images/zoom-in.svgz"), "", self)
@@ -41,6 +42,7 @@ class Previewer(QWidget):
         self.initActions()
 
     def initUI(self):
+        # Set up the layout
         HLayout = QHBoxLayout()
         VLayout = QVBoxLayout()
 
@@ -53,11 +55,13 @@ class Previewer(QWidget):
         HLayout.addWidget(self.go_next_btn)
         self.pdf_toolbar.setLayout(HLayout)
 
+        # Global layout
         VLayout.addWidget(self.pdf_toolbar)
         VLayout.addWidget(self.pdfView)
         self.setLayout(VLayout)
 
     def initActions(self):
+        # Connect Signals&Slots
         self.doc_open_btn.clicked.connect(self.open)
         self.zoom_in_btn.clicked.connect(self.on_actionZoom_In_triggered)
         self.zoom_out_btn.clicked.connect(self.on_actionZoom_Out_triggered)
@@ -67,6 +71,7 @@ class Previewer(QWidget):
         self.zoom_fit_width_btn.clicked.connect(self.on_actionZoom_Fit_Width_triggered)
 
     def update_zoom_factor(self):
+        # Update zoom factor
         view_size = self.pdfView.size()
         page_size = self.m_pdf.pagePointSize(self.pdfView.pageNavigator().currentPage())
 
@@ -80,6 +85,7 @@ class Previewer(QWidget):
         self.pdfView.setZoomFactor(factor)
 
     def preview(self, doc):
+        # Preview doc infos as PDF
         pdf_file = "./temp.pdf"
         c = canvas.Canvas(pdf_file, pagesize=A4)
         width, height = A4
@@ -88,13 +94,16 @@ class Previewer(QWidget):
         pdfmetrics.registerFont(TTFont(song, f"{song}.ttc"))
         c.setFont(song, 12)
 
+        # Draw the Name and Time
         c.drawCentredString(300, height - 50, doc["Description"]["name"])
         c.drawCentredString(300, height - 70, doc["Description"]["timeFrom"] + "-" + doc["Description"]["timeTo"])
 
+        # Draw the table
         table_data = doc["TableModel"]
         total_rows = len(table_data)
 
         row_per_page = 35
+        # Table style
         style = [
                     ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # 设置表头背景色
                     ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),  # 设置表头文字颜色
@@ -114,15 +123,12 @@ class Previewer(QWidget):
                 
             table_part.setStyle(TableStyle(style))
 
-            # 计算表格宽度和起始位置
             table_width, table_height = table_part.wrap(0, 0)
             x_position = (width - table_width) / 2
-            y_position = height - table_height - 90  # 根据需要调整 y 位置
+            y_position = height - table_height - 90
 
-            # 绘制表格
             table_part.drawOn(c, x_position, y_position)
 
-            # 如果不是最后一部分，换页
             if end_row < total_rows:
                 c.showPage()
                 c.setFont(song, 12)
@@ -131,9 +137,9 @@ class Previewer(QWidget):
                 c.drawString(width - 270, y_position - 40, "收货方：")
                 c.drawString(width - 270, y_position - 60, "对账日期：" + doc["Description"]["date"])
 
-        # 保存PDF文档
         c.save()
 
+        # Show PDF by pdfView
         self.m_pdf_path = pdf_file
         if self.m_pdf.status() == QPdfDocument.Status.Ready:
             self.m_pdf.close()
@@ -141,8 +147,10 @@ class Previewer(QWidget):
         self.pdfView.setDocument(self.m_pdf)
         self.page_selected(0)
 
+    # Slots
     @Slot()
     def open(self):
+        # Open PDF
         if not self.m_fileDialog:
             directory = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
             self.m_fileDialog = QFileDialog(self, "Choose a PDF", directory)
@@ -165,23 +173,27 @@ class Previewer(QWidget):
     
     @Slot(int)
     def page_selected(self, page):
+        # Page selected
         nav = self.pdfView.pageNavigator()
         nav.jump(page, QPoint(), nav.currentZoom())
 
     @Slot()
     def on_actionZoom_In_triggered(self):
+        # Zoom in
         factor = self.pdfView.zoomFactor() * ZOOM_MULTIPLIER
         self.pdfView.setZoomFactor(factor)
         self.pdfView.setZoomMode(QPdfView.ZoomMode.Custom)
 
     @Slot()
     def on_actionZoom_Out_triggered(self):
+        # Zoom out
         factor = self.pdfView.zoomFactor() / ZOOM_MULTIPLIER
         self.pdfView.setZoomFactor(factor)
         self.pdfView.setZoomMode(QPdfView.ZoomMode.Custom)
 
     @Slot()
     def on_actionPrevious_Page_triggered(self):
+        # Go to the previous page
         nav = self.pdfView.pageNavigator()
         pre_page = nav.currentPage()
         if pre_page != 0:
@@ -190,6 +202,7 @@ class Previewer(QWidget):
 
     @Slot()
     def on_actionNext_Page_triggered(self):
+        # Go to the next page
         nav = self.pdfView.pageNavigator()
         next_page = nav.currentPage()
         if next_page + 1 < self.m_pdf.pageCount():
@@ -198,16 +211,19 @@ class Previewer(QWidget):
 
     @Slot()
     def on_actionZoom_Fit_Best_triggered(self):
+        # Zoom fit best
         self.pdfView.setZoomMode(QPdfView.ZoomMode.FitInView)
         self.update_zoom_factor()
 
     @Slot()
     def on_actionZoom_Fit_Width_triggered(self):
+        # Zoom fit width
         self.pdfView.setZoomMode(QPdfView.ZoomMode.FitToWidth)
         self.update_zoom_factor()
 
     @Slot(str)
     def export_to_pdf(self, out_path):
+        # Export to pdf
         if len(self.m_pdf_path) != 0:
             document = pymupdf.open(self.m_pdf_path)
             document.save(out_path)
@@ -215,6 +231,7 @@ class Previewer(QWidget):
 
     @Slot(str)
     def export_to_word(self, out_path):
+        # Export to doc
         if len(self.m_pdf_path) != 0:
             document = Converter(self.m_pdf_path)
             document.convert(out_path, start=0, end=None)

@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QMenuBar, QFileDialog
 from PySide6.QtCore import Signal, Slot
 
 class MenuBar(QMenuBar):
+    # Signals
     export_pdf_signal = Signal(str)
     export_word_signal = Signal(str)
     preview_signal = Signal()
@@ -19,6 +20,7 @@ class MenuBar(QMenuBar):
         clearAction = self.addAction("Clear")
         clearAction.triggered.connect(self.clear_signal.emit)
 
+    # Slots
     @Slot()
     def exportWord(self):
         export_path, _ = QFileDialog.getSaveFileName(filter="Word 文档(*.docx)")
